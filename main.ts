@@ -12,8 +12,12 @@ the bug grins back`;
 
 const MAX_CHARS = 200;
 
-if (ENTRY.length === 0 || ENTRY.length > MAX_CHARS) {
-  console.error(`entry is ${ENTRY.length} characters, expected 1..${MAX_CHARS}`);
+// Count characters as Unicode code points, not UTF-16 units, so an
+// emoji or other astral character counts as one character.
+const charCount = [...ENTRY].length;
+
+if (charCount === 0 || charCount > MAX_CHARS) {
+  console.error(`entry is ${charCount} characters, expected 1..${MAX_CHARS}`);
   process.exit(1);
 }
 if (ENTRY.trim().length === 0) {
@@ -29,4 +33,4 @@ const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 mkdirSync(outDir, { recursive: true });
 const outPath = join(outDir, 'entry.txt');
 writeFileSync(outPath, ENTRY, 'utf8');
-console.log(`wrote entry.txt (${ENTRY.length} characters) to ${outPath}`);
+console.log(`wrote entry.txt (${charCount} characters) to ${outPath}`);
